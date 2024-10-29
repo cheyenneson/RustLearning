@@ -1,1 +1,1 @@
-All my materials from learning rust through reading `The Rust Programming Language` text. Includes a CHEAT_SHEET.md with my personal notes on the language.
+All my materials from learning rust through reading `The Rust Programming Language` text. Includes a CHEAT_SHEET.md with my personal notes on the language (from the perspective of learning this as a JS developer).
