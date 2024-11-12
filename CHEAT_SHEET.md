@@ -294,8 +294,32 @@ assert_eq!(s_len1, s_len2); // true
 * This is enforced for *References* using the **Borrow Checker**
 
 **Borrow Checker**
-* vars have 3 types of permissions on their data (exists only within the compiler, not at runtime): read, write, own
+* vars (or more accurately, *places*) have 3 types of permissions on their data (exists only within the compiler, not at runtime): read, write, own
 * RW is default, O is given if `mut` is used
 * once a var has been used for the last time, it loses all permissions
 * when a var references another, the original loses O/W permissions which are then given to the new until it is no longer being used, when it returns those permissions to the original
-* permissions can be given to **places**: includes variables (a), dereferences of places (\*a), array accesses of places (a[0]), fields of places (a.0 or a.field), or any combination of places (\*((\*a)[0].1))
+* **places**: includes variables (a), dereferences of places (\*a), array accesses of places (a[0]), fields of places (a.0 or a.field), or any combination of places (\*((\*a)[0].1))
+
+### Mutable References vs Immutable References
+## Immutable Reference
+AKA *shared references*, permit aliasing but disallow mutation
+```rust
+let num: &i32 = &v[2];
+```
+* v retains the R permission, but loses W/O
+* *num gains just R
+
+## Mutable Reference
+AKA *Unique Reference*, 
+```rust
+let num: &mut i32 = &mut v[2];
+```
+* v (temporarily) loses the ALL permissions (keeps it safe - can't have mutation AND aliasing!)
+* *num gains R/W
+* you could temporarily downgrade these references to read-only if you bring in another non-mutable variable (eg num2) that references \*num (eg &\*num) -> now num and num2 are both read-only until we don't need num2 anymore
+
+* The borrow checker enforces that **data must outlive any references to it** (more info in CH 10.3 - **Lifetime Parameters**)
+···function input/output references are treated differently than references within a function body
+···Rust uses the F (flow) permission to check the safety of these types of references ^^
+···Examples when you don't have flow permission: when you return a reference to the stack from a function (because that portion of the stack is invalidated on return) or when you conditionally return a reference to one of multiple function arguments and we don't know which one we might end up referencing after the function returns 
+
